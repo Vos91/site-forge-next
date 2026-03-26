@@ -160,10 +160,20 @@ async def run_generator(project_dir: str, model: str, verbose: bool, live: bool 
     """Run the generator agent to build the website."""
     system_prompt = load_prompt("generator")
 
-    if feedback:
-        prompt = f"""Read the evaluator's feedback in `evaluation.md` and the product spec in `spec.md`.
+    # Read the spec and inject it directly into the prompt so the agent can't ignore it
+    spec_path = Path(project_dir) / "spec.md"
+    spec_content = ""
+    if spec_path.exists():
+        spec_content = spec_path.read_text(encoding="utf-8")
 
-The evaluator found issues that need fixing. Here's a summary:
+    if feedback:
+        prompt = f"""Here is the PRODUCT SPEC you must follow exactly. Every page, feature, color, and piece of content must match this spec:
+
+<spec>
+{spec_content}
+</spec>
+
+The evaluator found issues. Here's the feedback:
 
 {feedback}
 
@@ -171,15 +181,20 @@ Fix the issues, improve the design based on feedback, and update progress.json.
 Remember: if scores are below 5 on any criterion, consider a significant design pivot.
 Commit your changes with descriptive messages."""
     else:
-        prompt = """Read the product spec in `spec.md` and the progress in `progress.json`.
+        prompt = f"""Here is the PRODUCT SPEC you must follow exactly. Every page, feature, color, and piece of content must match this spec. Do NOT build anything other than what this spec describes:
 
-Set up the project (if not already set up) and implement features one at a time.
+<spec>
+{spec_content}
+</spec>
+
+Set up the project and implement features one at a time.
 
 For each feature:
-1. Implement it
-2. Start the dev server and verify it works
-3. Git commit with a descriptive message
-4. Update progress.json
+1. Implement it exactly as described in the spec above
+2. Use the colors, typography, and content from the spec — NOT defaults from your training data
+3. Start the dev server and verify it works
+4. Git commit with a descriptive message
+5. Update progress.json
 
 Build ALL features listed in the spec. Follow the design direction closely.
 Make the site look professional and distinctive — NOT generic AI slop."""
