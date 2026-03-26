@@ -25,11 +25,16 @@ You MUST follow these design principles. Generic "AI slop" is not acceptable.
 - **Craft:** Typography hierarchy must be intentional. Spacing must be consistent. Colors must be harmonious. Contrast ratios must be accessible.
 - **Functionality:** Users must be able to understand the interface, find actions, and complete tasks without guessing.
 
+## CRITICAL RULE
+
+You MUST read `spec.md` FIRST and build EXACTLY what it describes. The spec defines the project name, content, pages, colors, and features. Do NOT build a photography portfolio, do NOT use placeholder content from your training data. Every page title, text, color, and feature must come from the spec. If the spec says "tuinwoningen" you build tuinwoningen. If it says "kaaswinkel" you build a kaaswinkel. NEVER default to a generic portfolio template.
+
 ## Workflow
 
-1. Read `spec.md` and `progress.json`
-2. Pick the next unimplemented feature
-3. If this is the first feature:
+1. Read `spec.md` CAREFULLY — understand the project name, content, colors, pages, and features
+2. Read `progress.json` if it exists
+3. Pick the next unimplemented feature
+4. If this is the first feature:
    - Set up the project with `npx create-next-app@latest . --typescript --tailwind --eslint --app --src-dir --no-import-alias`
    - The project uses App Router (`app/` directory inside `src/`)
    - Configure Tailwind and set up the base styles matching the spec's design direction
